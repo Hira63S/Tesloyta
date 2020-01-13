@@ -31,12 +31,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # grab the raw numpy array representing the image,
     # then, initialize the timestamp
     # and occupied/unoccpied text
+    # capture frame-by-frame from the video file
+    ret, frame = capture.read()
+
     image = frame.PiRGBArray
 
     # show the frame
-    cv2.frame("video_frames", image)
+    cv2.imshow("video_frames", image)
     key = cv2.waitKey(1) & 0xFF
 
+    # show the grayscale frames
+    gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    cv2.imshow("Grayscale input camera", gray_frame)
     # clear the stream in preparation for the next frame
     rawCapture.truncate(0)
 
@@ -45,11 +51,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     if key == ord("q"):
         break
 
-        
 
-# grab an image from the camera
-camera.capture(rawCapture, format="bgr")
-image = rawCapture.array
+rawCapture.release()
+##  grab an image from the camera
+# camera.capture(rawCapture, format="bgr")
+# image = rawCapture.array
 
-cv2.imshow("Image", rawCapture)
-cv2.waitKey(0)
+# cv2.imshow("Image", rawCapture)
+# cv2.waitKey(0)
