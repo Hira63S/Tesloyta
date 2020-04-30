@@ -40,7 +40,7 @@ classes = [
 
 # load the model
 model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
-
+# model = torchvision.models.resnet50(pretrained=True)
 # set the model in evaluation model
 model.eval()
 
