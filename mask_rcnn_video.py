@@ -37,8 +37,10 @@ classes = [
     'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush', 'hair brush']
 
 
-model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
-model.eval()
+#model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
+#model.eval()
+model = torchvision.models.resnet50(pretrained=True)
+
 transform = transforms.Compose([transforms.ToPILImage(), transforms.ToTensor()])
 
 print('model loaded')
