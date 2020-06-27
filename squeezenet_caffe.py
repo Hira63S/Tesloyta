@@ -46,7 +46,7 @@ for (i, idx) in enumerate(idxs):
             0.7, (0, 0, 255), 2)
 
     print("[INFO] {}. label: {}, probability: {:.5}".format(i + 1,
-        classes[idx], preds[0][idx]))
+        classes[id], preds[0][idx]))
 
 cv2.imshow("Image", image)
 cv2.waitKey(0)
