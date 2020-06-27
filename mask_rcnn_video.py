@@ -81,7 +81,7 @@ while True:
     if (int(nowTime-startTime)) > fpsLimit:
         startTime = time.time()
 
-    nn_input = transform(frame)
+    nn_input = transform(frame)#
     output = model([nn_input])
 
 # let's iterate over the network output for all boxes
