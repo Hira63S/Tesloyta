@@ -67,7 +67,8 @@ while True:
     ])
     # frame = torch.from_numpy(frame).long()
     # print(type(frame))
-    frame = Image.fromarray(frame)
+    frame = Image.open(frame)
+# frame = Image.fromarray(frame)
     input_tensor = preprocess(frame)
     input_batch = input_tensor.unsqueeze(0)
 
