@@ -1,21 +1,24 @@
-# Accessing some properties of the capture object
-# Finally, you can access some properties of the capture object using capture.get(property_identifier). In this case, we get some properties, such as frame width, frame height, and frames per second (fps). If we call a property that is not supported, the returned value will be 0:
+"""
+Example to introduce how to read a camera connected to your computer and save frame
+"""
 
 # Import the required packages
 import cv2
 import argparse
-
+import numpy as np
 # We first create the ArgumentParser object
 # The created object 'parser' will have the necessary information
 # to parse the command-line arguments into data types.
-# parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser()
 
 # We add 'index_camera' argument using add_argument() including a help.
- parser.add_argument("0", help="index of the camera to read from", type=int)
- args = parser.parse_args()
+parser.add_argument("video_path", help="path to the video file")
+
+# parser.add_argument("index_camera", help="index of the camera to read from", type=int)
+args = parser.parse_args()
 
 # We create a VideoCapture object to read from the camera (pass 0):
-capture = cv2.VideoCapture(0)
+capture = cv2.VideoCapture(args.video_path)
 
 # Get some properties of VideoCapture (frame width, frame height and frames per second (fps)):
 frame_width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -28,8 +31,11 @@ print("CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(frame_height))
 print("CAP_PROP_FPS : '{}'".format(fps))
 
 # Check if camera opened successfully
-if capture.isOpened()is False:
+if capture.isOpened() is False:
     print("Error opening the camera")
+
+# Index to save current frame
+frame_index = 0
 
 # Read until video is completed
 while capture.isOpened():
@@ -41,10 +47,23 @@ while capture.isOpened():
         cv2.imshow('Input frame from the camera', frame)
 
         # Convert the frame captured from the camera to grayscale:
-        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+#        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Display the grayscale frame:
-        cv2.imshow('Grayscale input camera', gray_frame)
+#        cv2.imshow('Grayscale input camera', gray_frame)
+
+        # kerneled
+#        kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+#        sharpened = cv2.filter2D(frame, -1, kernel)
+#        cv2.imshow('sharp', sharpened)
+
+        # Press c on keyboard to save current frame
+        if cv2.waitKey(20) & 0xFF == ord('d'):
+            frame_name = "camera_frame_{}.png".format(frame_index)
+#            gray_frame_name = "grayscale_camera_frame_{}.png".format(frame_index)
+            cv2.imwrite(frame_name, frame)
+#            cv2.imwrite(gray_frame_name, gray_frame)
+            frame_index += 1
 
         # Press q on keyboard to exit the program
         if cv2.waitKey(20) & 0xFF == ord('q'):

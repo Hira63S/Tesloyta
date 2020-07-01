@@ -1,21 +1,17 @@
-# Accessing some properties of the capture object
-# Finally, you can access some properties of the capture object using capture.get(property_identifier). In this case, we get some properties, such as frame width, frame height, and frames per second (fps). If we call a property that is not supported, the returned value will be 0:
-
-# Import the required packages
 import cv2
 import argparse
 
 # We first create the ArgumentParser object
 # The created object 'parser' will have the necessary information
 # to parse the command-line arguments into data types.
-# parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser()
 
 # We add 'index_camera' argument using add_argument() including a help.
- parser.add_argument("0", help="index of the camera to read from", type=int)
- args = parser.parse_args()
+parser.add_argument("index_camera", help="index of the camera to read from", type=int)
+args = parser.parse_args()
 
 # We create a VideoCapture object to read from the camera (pass 0):
-capture = cv2.VideoCapture(0)
+capture = cv2.VideoCapture(args.index_camera)
 
 # Get some properties of VideoCapture (frame width, frame height and frames per second (fps)):
 frame_width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
