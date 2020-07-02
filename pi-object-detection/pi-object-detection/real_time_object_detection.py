@@ -67,7 +67,7 @@ while True:
     # to have a maximum width of 400 pixels
     ret, frame = capture.read()
     # frame = imutils.resize(frame, width=400)
-
+#    frame = cv2.resize(frame, (400, 300))
     # grab the frame dimensions and convert it to a blob
     if ret is True:
 
