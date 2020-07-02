@@ -45,25 +45,21 @@ capture = cv2.VideoCapture(0)
 
 w = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 h = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
-print(w)
-print(h)
 fps = capture.get(cv2.CAP_PROP_FPS)
 print(fps)
-fourcc = cv2.VideoWriter_fourcc(*'FMP4')
-#DIVX
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
 
 time.sleep(2.0)
-# w = 1280
-# h = 720
 
-writer = cv2.VideoWriter(args["output"], fourcc, args["fps"], (640, 480))
+
+writer = cv2.VideoWriter(args["output"], fourcc, args["fps"], (int(frame_width), int(frame_height)), False)
 
 # loop over the frames from the video stream
 while True:
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 400 pixels
 	ret, frame = capture.read()
-	#frame = imutils.resize(frame, width=400)
+	frame = imutils.resize(frame, width=400)
 
 	# grab the frame dimensions and convert it to a blob
 	if ret is True:
@@ -101,7 +97,7 @@ while True:
 				cv2.putText(frame, label, (startX, y),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
 
-				writer.write(ret)
+				writer.write(frame)
 
 		# show the output frame
 		cv2.imshow("Frame", frame)
@@ -112,18 +108,13 @@ while True:
 			break
 
 		# update the FPS counter
-		# fps.update()
+		fps.update()
 
 # stop the timer and display FPS information
-# fps.stop()
-
-# print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
-# print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+fps.stop()
+print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
+print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 
 # do a bit of cleanup
-print("[INFO] cleaning up...")
-# writer.release()
-capture.release()
-
 cv2.destroyAllWindows()
-writer.release()
+vs.stop()
