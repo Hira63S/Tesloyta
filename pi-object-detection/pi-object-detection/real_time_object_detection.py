@@ -12,6 +12,8 @@ import cv2
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--input", required=True,
+    help = "Link to input video")
 ap.add_argument("-o", "--output", required=True,
     help = "link to output file")
 ap.add_argument("-f", "--fps", type=int, default=20,
@@ -41,7 +43,8 @@ net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
 print("[INFO] starting video stream...")
 # vs = VideoStream(src=0).start()
 # vs = VideoStream(usePiCamera=True).start()
-capture = cv2.VideoCapture(0)
+# capture = cv2.VideoCapture(0)
+capture = cv2.VideoCapture(args["input"])
 
 w = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 h = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
