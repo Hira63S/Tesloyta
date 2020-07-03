@@ -12,7 +12,7 @@ The above shown video was produced by a CaffeNet model as the speed was slightly
 
 <!-- Code Blocks -->
 ```python
-python RaspberryPi/PyScripts/MobileNet_Detection/real_time_object_detection.py --output test.avi --prototxt MobileNetSSD_deploy.prototxt --model MobileNetSSD_deploy.caffemodel
+python RaspberryPi/PyScripts/MobileNet_Detection/real_time_object_detection.py --output test.avi --prototxt MobileNetSSD_deploy.prototxt.txt --model MobileNetSSD_deploy.caffemodel
 ```
 
 ## Research
