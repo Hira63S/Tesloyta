@@ -8,7 +8,9 @@ A MobileNet model pre-trained on COCO dataset with an SSD detector was used for 
 
 The above shown video was produced by a CaffeNet model as the speed was slightly better than the PyTorch MobileNet_v1 model. To re-produce this work, simply clone the repo and run:
 <!-- Code Blocks -->
-'''python RaspberryPi/PyScripts/MobileNet_Detection/real_time_object_detection.py --output test.avi --prototxt MobileNetSSD_deploy.prototxt --model MobileNetSSD_deploy.caffemodel'''
+'''python
+python RaspberryPi/PyScripts/MobileNet_Detection/real_time_object_detection.py --output test.avi --prototxt MobileNetSSD_deploy.prototxt --model MobileNetSSD_deploy.caffemodel
+'''
 
 ## Research
 One major blocker in getting the project completed and functioning was the inference time. Because of the compute limitations, a smaller model with higher mAP (mean Average Percision) was needed. Both SqueezeNet and MobileNet are ideal for Computer Vision applications while using devices like RaspberryPi. However, not only do they models need to be trained on datasets specific to objects on the road but they also need to use better and more accurate object detectors so that even the smaller objects get noticed. There is a need to take care of all the edge cases as well when it comes to real-time inference by autonomous cars on the road. Multiple different models with newer techniques like DETR are being researched and the current work being done can be found in Models folder.
