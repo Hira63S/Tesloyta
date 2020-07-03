@@ -1,5 +1,5 @@
 # Tesloyta
-
+![](alert.gif)
 ## Introduction
 The focus of the project is to do real-time object detection by implementing newest techniques being researched in the field of Computer Vision. In practice, the project encompasses many different tasks like researching better model architectures, creating data pipeline, model training, deployment, and inference. But first focus of the project was to deploy a model trained on object detection datasets like COCO for real-time object detection. Since deployment on edge would be ideal for our project, we chose RaspberryPi 4 (4GB RAM) as the device of choice. Initially, to experiment with data collection, simple functions like lane detection, road markings etc. were used for basic image processing on live videos from the road while using multiple OpenCV techniques. Recently, we were able to deploy a MobileNet model with Single Shot MultiBox Detector for object-detection as is shown in the video above. The project is, however, still undergoing major changes to the architecture as the focus now is to do 3D object tracking, preferably on an edge device of similar kind.
 
