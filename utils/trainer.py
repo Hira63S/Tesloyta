@@ -27,7 +27,7 @@ class Trainer():
         end = end.time()
 
         for iter_id, batch in enumerate(data_loader):
-            if iter_id >= num_iters:
+            if iter_id >= num_iters:  # num_iters num samples/batch_size
                 break
 
             for k in batch:
