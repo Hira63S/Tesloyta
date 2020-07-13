@@ -62,7 +62,34 @@ def train(args):
 
     for epoch in range(1, args.num_epochs+1):
         train_stats=trainer.train_epoch(epoch, train_loader)
-        
+        logger.update(val_stats, phase='val', epoch=epoch)
+
+        # save the model weights
+        save_path = os.path.join(args.save_dir, 'model_last.pth')
+        save_model(model, save_path, epoch)
+
+        if epoch % args.save_intervals == 0:
+            save_path = os.path.join(args.save_dir, 'model_{}.pth'.format(epoch))
+            save_model(model, save_path, epoch)
+
+        if args.val_intervals > 0 and epoch % args.val_intervals == 0:
+            val_stats = trainer.val_epoch(epoch, val_loader)
+            logger.update(val_stats, phase='val', epoch=epoch)
+
+            if not args.no_eval:
+                aps = eval_dataset(val_dataset, save_path, args)
+                logger.update(aps, phase='val', epoch=epoch)
+
+            value = val_stats['loss'] if args.no_eval else aps['mAP']
+            if better_than(value, best):
+                best = value
+                save_path = os.path.join(args.save_dir, 'model_best.pth')
+                save_model(model, save_path, epoch)
+
+        logger.plot(metrics)
+        logger.print_bests(metrics)
+
+    torch.cuda.empty_cache()
 
 
 

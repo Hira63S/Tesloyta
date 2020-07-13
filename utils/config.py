@@ -11,22 +11,34 @@ class Args(object):
         self.parser.add_argument("--debug", type=int, default=0, help='0: show nothing\n'
                                       '1: visualize pre-processed image and boxes\n'
                                       '2: visualize detections.')
-        self.parser.add_argument("debug_dir", required= True, help = 'If need be to debug')
+        self.parser.add_argument("debug_dir", required= True,
+                                help = 'If need be to debug')
 
         # train
-        self.parser.add_argument("--dataset", default='kitti', help ='coco | kitti')
-        self.parser.add_argument("--batch_size", type=int, default=20,help = 'batch_size')
-        self.parser.add_argument('--num_iters', type=int, default=-1, help='default: # samples/ batch_size')
-        self.parser.add_argument("--lr", type=float, default=0.4, help='learning rate')
-        self.parser.add_argument("--weight_decay", type=float, default=0.0001, help='wegiht deay of adam')
+        self.parser.add_argument("--dataset", default='kitti',
+                                help ='coco | kitti')
+        self.parser.add_argument("--batch_size", type=int, default=20,
+                                help = 'batch_size')
+        self.parser.add_argument('--num_iters', type=int, default=-1,
+                                help='default: # samples/ batch_size')
+        self.parser.add_argument("--lr", type=float, default=0.4,
+                                help='learning rate')
+        self.parser.add_argument("--weight_decay", type=float, default=0.0001,
+                                help='wegiht deay of adam')
         #self.parser.add_argument("-", "", required= , help = '')
-
+        self.parser.add_argument('--save_intervals', type=int, default=1,
+                                help='number of epochs to save model.')
         #self.parser.add_argument("-", "", required= , help = '')
 
         # system
-        self.parser.add_argument("--num_workers", type=int, default=4 , help ='dataloader thread, 0 for no-thread.')
-        self.parser.add_argument("--gpus", default=0, help='-1 for CPU, use comma for multiple gpus')
-
+        self.parser.add_argument("--num_workers", type=int, default=4 ,
+                                help ='dataloader thread, 0 for no-thread.')
+        self.parser.add_argument("--gpus", default=0,
+                                help='-1 for CPU, use comma for multiple gpus')
+        self.parser.add_argument("--seed", type=int, default=42,
+                                help="random seed")
+        self.parser.add_argument("--not_cuda_benchmark", action='action_true',
+                                help="disable when the input size is not fixed.")
     def parser(self):
         args = self.parser.parse_args()
 
