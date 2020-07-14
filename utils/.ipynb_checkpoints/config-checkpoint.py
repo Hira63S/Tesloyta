@@ -15,7 +15,6 @@ class Args(object):
                                 help = 'If need be to debug')
 
         # train
-        self.parser.add_argument("--num_classes", default=5, help="num of classes to train")
         self.parser.add_argument("--dataset", default='kitti',
                                 help ='coco | kitti')
         self.parser.add_argument("--batch_size", type=int, default=20,

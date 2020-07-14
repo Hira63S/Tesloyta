@@ -2,8 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.init as init
 from torch.utils.model_zoo import load_url as load_state_dict_from_url
-from config import Args
-
 
 __all__ = ['SqueezeNet', 'squeezenet1_0', 'squeezenet1_1']
 
@@ -83,7 +81,7 @@ class SqueezenetDet(nn.Module):
             raise ValueError("Unsupported SqueezeNet version")
 
         # adding a drop out layer, might get rid of it later on
-        self.dropout = nn.Dropout(args.dropout_prob, inplace=True) \
+        self.dropout = nn.Dropout(args.dropoout_prob, inplace=True) \
             if args.dropout_prob > 0 else None
         self.convdet = nn.Conv2d(768 if args.arch == 'squeezedet' else 512,
                                  args.anchors_per_grid * (args.num_classes + 5),  # K (n_classes + 5) from the SqueezeDet paper +1 is for confidence
@@ -223,9 +221,3 @@ class SqueezeDet(nn.Module):
               'boxes': pred_boxes}
 
         return det
-
-
-print('Hi Tesla! I am model')
-
-args = Args()
-model = SqueezeDetWithLoss(args)
