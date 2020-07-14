@@ -35,8 +35,9 @@ def train(args):
             model = load_official_model(model, args.load_model)
         else:
             model = load_model(model, args.load_model)
-    optimizer = torch.optim.Adam(model.parameters(),
+    optimizer = torch.optim.SGD(model.parameters(),
                                 lr= args.lr,
+                                momentum=args.momentum,
                                 weight_decay = args.weight_decay)
 #   Adam does not use momentum  momentum = args.momentum,
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 50, gamma=0.5)

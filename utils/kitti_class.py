@@ -3,16 +3,19 @@ Kitti class that loads the kitti dataset and is builtoff of BaseDataset class fr
 """
 
 import os
+import subprocess
 import numpy as np
+import skimage.io
 
 from Base_class import BaseDataset
+from boxes import generate_anchors
 
 class KITTI(BaseDataset):
-    def __init__(self, phase, cfg):
-        super(KITTI,self).__init__(phase, cfg)
+    def __init__(self, phase, args):
+        super(KITTI,self).__init__(phase, args)
 
         self.input_size = (384, 1248)
-        self.class_names = ('Car', 'Pedestrian', 'Cyclist', 'Truck')
+        self.class_names = ('Car', 'Pedestrian', 'Cyclist', 'Truck', 'Van')
         self.rgb_mean = np.array([93.877, 98.801, 95.923], dtype=np.float32).reshape(1, 1, 3)
         self.rgb_std = np.array([78.782, 80.130, 81.200], dtype=np.float32).reshape(1, 1, 3)
 
@@ -30,7 +33,7 @@ class KITTI(BaseDataset):
         self.anchors_per_grid = self.anchors_seed.shape[0]   # 9
         self.num_anchors = self.anchors.shape[0]   # 9 anchors per grid and we pass in input size and anchor seed
 
-        self.results_dir = os.path.join(cfg.save_dir, 'results')
+        self.results_dir = os.path.join(args.save_dir, 'results')
 
     def get_sample_ids(self):
         sample_set_name = 'train.txt' if self.phase == 'train' \
@@ -95,7 +98,7 @@ class KITTI(BaseDataset):
                     fp.write(line)
 
     def evaluate(self):
-        kitti_eval_tool_path = os.path.join(self.cfg.root_dir, 'src/utils/kitti_eval/cpp/evaluate_object')
+        kitti_eval_tool_path = os.path.join(self.args.root_dir, 'src/utils/kitti_eval/cpp/evaluate_object')
         cmd = '{} {} {} {} {}'.format(kitti_eval_tool_path,
                                      os.path.join(self.data_dir, 'training'),
                                      self.sample_set_path,
@@ -120,24 +123,6 @@ class KITTI(BaseDataset):
 
         aps['mAP'] = sum(aps.values()) / len(aps)
         return aps
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

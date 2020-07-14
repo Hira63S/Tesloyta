@@ -15,7 +15,7 @@ class BaseDataset(torch.utils.data.Dataset):
     """
     def __init__(self,phase,args):
         super(BaseDataset, self).__init__()
-        self.phase = phase
+        self.phase = phase    # the mode the dataset is gonna be in
         self.args = args
 
     def __getitem__(self, index):
@@ -53,6 +53,7 @@ class BaseDataset(torch.utils.data.Dataset):
         """
         if boxes is not None:
             # [x, y, w, h] -> 0, 2 -> x and width
+            # a, min max -> boxes x1 and x2 coordinations, min is 0 and max is the orig_size of input
             boxes[:, [0, 2]] = np.clip(boxes[:, [0, 2]], 0., image_meta['orig_size'][1] - 1.)  # min max out -> deals with the width
             boxes[:, [1, 3]] = np.clip(boxes[:, [1, 3]], 0., image_meta['orig_size'][0] - 1.)   # deals with the height
 
@@ -81,7 +82,7 @@ class BaseDataset(torch.utils.data.Dataset):
         gt = np.zeros((self.num_anchors, self.num_classes + 9), dtype=np.float32)
 
         gt[anchor_indices, 0] = 1.
-        gt[anchor_indice, 1:5] = boxes
+        gt[anchor_indices, 1:5] = boxes
         gt[anchor_indices, 5:9] = deltas
         gt[anchor_indices, 9+class_ids] = 1.   # class logits
 

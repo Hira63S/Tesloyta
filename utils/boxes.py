@@ -42,17 +42,17 @@ def generate_anchors(grid_size, input_size, anchors_seed):
     assert anchors_seed.shape[1] == 2
 
     anchors_per_grid = anchors_seed.shape[0]
-    grid_width, grid_height = grid_size
+    grid_height, grid_width = grid_size
 
     anchors_shape = np.reshape(
-    grid_width * grid_height * [anchors_seed],
-    (grid_height, grid_width, anchors_per_grid, 2)
+        grid_width * grid_height * [anchors_seed],
+        (grid_height, grid_width, anchors_per_grid, 2)
     )
 
     input_height, input_width = input_size
     anchors_center_x, anchors_center_y = np.meshgrid(
-    input_width * ( 1 / (grid_width * 2) + np.linspace(0, 1, grid_width + 1)[:-1]),
-    input_height * (1 / (grid_height * 2) + np.linspace(0,1, grid_height + 1)[:-1])
+        input_width * (1 / (grid_width * 2) + np.linspace(0, 1, grid_width + 1)[:-1]),
+        input_height * (1 / (grid_height * 2) + np.linspace(0,1, grid_height + 1)[:-1])
 
     )
     anchors_center = np.stack((anchors_center_x, anchors_center_y), axis=2)
@@ -139,7 +139,7 @@ def boxes_postprocess(boxes, image_image):
     if 'scales' in image_meta:
         boxes[:, [0, 2]] /= image_meta['scales'][1]
         boxes[:, [1, 3]] /= image_meta['scales'][0]
-    if 'padding' in iamge_meta:
+    if 'padding' in image_meta:
         boxes[:, [0,2]] -= image_meta['padding'][2]
         boxes[:, [1,3]] -= image_meta['padding'][0]
     if 'crops' in image_meta:

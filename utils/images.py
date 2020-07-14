@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import cv2
 import matplotlib.pyplot as plt
 
 
@@ -39,8 +40,8 @@ def drift(image, image_meta, prob=0., boxes=None):
         dx = np.random.randint(-max_drift_x, min(max_drift_x, max_boxes_x))
         drifts = np.array([dy, dx], dtype=np.int32)
 
-        image_height = image_meta['orig_size'][1] - dy
-        image_width = image_meta['orig_size'][0] - dx
+        image_height = image_meta['orig_size'][0] - dy
+        image_width = image_meta['orig_size'][1] - dx
 
         orig_x, orig_y = max(dx, 0), max(dy, 0)
         drift_x, drift_y = max(-dx, 0), max(-dy, 0)
