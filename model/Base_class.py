@@ -2,10 +2,8 @@
 Main Dataset file that takes in the input data and prepares it for the model.
 """
 import os
-import subprocess
-import numpy as np
-import skimage.io
 
+import numpy as np
 import torch.utils.data
 
 from images import whiten, drift, flip, resize, crop_or_pad

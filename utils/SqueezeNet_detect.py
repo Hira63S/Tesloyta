@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.init as init
 from torch.utils.model_zoo import load_url as load_state_dict_from_url
 from config import Args
-
+from resolver import deltas_to_boxes, compute_overlaps, safe_softmax
 
 __all__ = ['SqueezeNet', 'squeezenet1_0', 'squeezenet1_1']
 
@@ -115,9 +115,7 @@ class SqueezenetDet(nn.Module):
 
 # prediction resolver i.e. make them interpretable
 
-def safe_softmax(probs, dim=None):
-    exp = torch.exp(probs - torch.max(probs, dim=dim, keepdim=True)[0])
-    return exp / torch.sum(exp, dim=dim, keepdim=True)
+
 
 class PredictionResolver(nn.Module):
     def __init__(self, args, log_softmax=False):
@@ -226,6 +224,3 @@ class SqueezeDet(nn.Module):
 
 
 print('Hi Tesla! I am model')
-
-args = Args()
-model = SqueezeDetWithLoss(args)
