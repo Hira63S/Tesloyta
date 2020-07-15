@@ -78,13 +78,15 @@ class Trainer():
         return self.run_epoch('val', epoch, data_loader)
 
     def set_device(self, gpus, chunk_sizes, device):
-        if len(gpus) > 1:
-            self.model = DataParallel(self.model, device_ids=gpus,
-                                      chunk_sizes=chunk_sizes).to(device)
-        else:
+        if len(gpus) == 1:
+#            self.model = DataParallel(self.model, device_ids=gpus,
+#                                      chunk_sizes=chunk_sizes).to(device)
+#        else:
             self.model = self.model.to(device)
 
         for state in self.optimizer.state.values():
             for k, v in state.items():
                 if isinstance(v, torch.Tensor):
                     state[k] = v.to(device=device, non_blocking=True)
+
+print("Hello Tesla! I am Trainer")

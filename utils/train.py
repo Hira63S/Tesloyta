@@ -9,6 +9,7 @@ import torch
 import torch.utils.data
 from torch.optim.lr_scheduler import StepLR
 
+from load_model import load_model, load_official_model, save_model
 # from engine.trainer import Trainer
 from SqueezeNet_detect import SqueezeDetWithLoss
 from config import Args
@@ -19,7 +20,7 @@ def load_dataset(dataset_name):
         from kitti_class import KITTI as Dataset
     return Dataset
 
-load_dataset('kitti')
+# load_dataset('kitti')
 
 def train(args):
     Dataset = load_dataset(args.dataset)
