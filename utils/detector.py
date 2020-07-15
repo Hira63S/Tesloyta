@@ -7,7 +7,7 @@ from torchvision.ops import nms
 
 from images import image_postprocess
 from boxes import boxes_postprocess, visualize_boxes
-from utils.misc import MetricLogger
+from metriclogger import MetricLogger
 
 class Detector(object):
     def __init__(self, model, args):
