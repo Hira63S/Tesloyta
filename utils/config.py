@@ -19,7 +19,7 @@ class Args(object):
         self.parser.add_argument("--exp_id", default='default')
 
         # model
-        self.parser.add_argument("--architect", default="squeezedetect",
+        self.parser.add_argument("--arch", default="squeezedetect",
                                  help="model architecture: squeezedetect | squeezedetectPlus")
         self.parser.add_argument("--dropout_prob", type=float, default=0.5, help='prob of dropout')
 
@@ -30,13 +30,13 @@ class Args(object):
         self.parser.add_argument("--num_epochs", type=int, default=30, help='total training epochs.')
         self.parser.add_argument("--num_iters", type=int, default=-1, help='default: # samples/batch_size')
         self.parser.add_argument("--batch_size", type=int, default=20, help = 'batch_size')
-        self.parser.add_argument('--num_iters', type=int, default=-1, help='default: # samples/ batch_size')
+#        self.parser.add_argument('--num_iters', type=int, default=-1, help='default: # samples/ batch_size')
         self.parser.add_argument("--lr", type=float, default=0.01, help='learning rate')
         self.parser.add_argument("--weight_decay", type=float, default=0.0001, help='wegiht deay of adam')
         self.parser.add_argument("--master_batch_size", type=int, default=-1, help = 'batch_size on the master GPU')
         self.parser.add_argument('--save_intervals', type=int, default=1, help='number of epochs to save model.')
         self.parser.add_argument("--val_intervals", type=int, default=5, help = 'num of epochs to run validations.')
-        self.parser.add_argument("--no_eval", actions='store_true',help = 'bypass mAP eval during training.')
+        self.parser.add_argument("--no_eval", action='store_true',help = 'bypass mAP eval during training.')
         self.parser.add_argument("--print_interval", type=int, default=10, help = 'disable progress bar and print to screen.')
         self.parser.add_argument("--flip_prob", type=float, default=0.5,help = 'prob of horizontal flip during training')
         self.parser.add_argument("--drift_prob", type=float, default=1., help = 'prob of drifting image during training')
@@ -55,14 +55,14 @@ class Args(object):
         # system
         self.parser.add_argument("--num_workers", type=int, default=4,
                                 help ='dataloader thread, 0 for no-thread.')
-        self.parser.add_argument("--gpus", default=0,
+        self.parser.add_argument("--gpus", default='0',
                                 help='-1 for CPU, use comma for multiple gpus')
         self.parser.add_argument("--seed", type=int, default=42,
                                 help="random seed")
         self.parser.add_argument("--not_cuda_benchmark", action='store_true',
                                 help="disable when the input size is not fixed.")
 
-    def parser(self, cfg = ''):
+    def parse(self, cfg = ''):
         if cfg == '':
             args = self.parser.parse_args()
         else:
@@ -102,7 +102,7 @@ class Args(object):
     def update_dataset_info(args, dataset):
         args.input_size = dataset.input_size
         args.rgb_mean = dataset.rgb_mean
-        args.rgb_std = dataset.rgb_dataset
+        args.rgb_std = dataset.rgb_std
         args.class_names = dataset.class_names
         args.num_classes = dataset.num_classes
         args.anchors = dataset.anchors

@@ -20,8 +20,9 @@ def load_dataset(dataset_name):
         from datasets.kitti import KITTI as Dataset
     return dataset
 
+
 class MetricLogger(object):
-    def __int__(self):
+    def __init__(self):
         self.val = 0
         self.avg = 0
         self.sum = 0

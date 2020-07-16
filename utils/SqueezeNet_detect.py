@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.init as init
 from torch.utils.model_zoo import load_url as load_state_dict_from_url
-from config import Args
 from resolver import deltas_to_boxes, compute_overlaps, safe_softmax
 
 __all__ = ['SqueezeNet', 'squeezenet1_0', 'squeezenet1_1']
@@ -31,7 +30,7 @@ class Fire(nn.Module):
         final_conv = torch.cat([
             self.expand1x1_activation(self.expand1x1(x)),
             self.expand3x3_activation(self.expand3x3(x))
-        ], 1)
+        ], dim=1)
         return final_conv
 
 
@@ -91,8 +90,6 @@ class SqueezenetDet(nn.Module):
 
         self.init_weights()
 
-
-
     def forward(self, x):
         x = self.features(x)
         if self.dropout is not None:
@@ -114,7 +111,6 @@ class SqueezenetDet(nn.Module):
 # would probably have to do something here
 
 # prediction resolver i.e. make them interpretable
-
 
 
 class PredictionResolver(nn.Module):
@@ -150,7 +146,7 @@ class Loss(nn.Module):
         self.class_loss_weight = args.class_loss_weight
         self.positive_score_loss_weight = args.positive_score_loss_weight
         self.negative_score_loss_weight = args.negative_score_loss_weight
-        self.bbox_loss_weight = args.bbox_loss_weights
+        self.bbox_loss_weight = args.bbox_loss_weight
 
     def forward(self, pred, gt):
         # slice the gt tensor ground truth tensor
@@ -177,7 +173,7 @@ class Loss(nn.Module):
                                        dim=[1,2]) / (self.num_anchors - num_objects)
 
 
-        bbox_loss = torch.sum(self.bbox_loss_weight * anchor_masks * (pred_deltas - get_deltas) ** 2,
+        bbox_loss = torch.sum(self.bbox_loss_weight * anchor_masks * (pred_deltas - gt_deltas) ** 2,
                              dim=[1,2],) / num_objects
 
         loss = class_loss + positive_score_loss + negative_score_loss + bbox_loss
@@ -189,7 +185,7 @@ class Loss(nn.Module):
             'bbox_loss': bbox_loss
 
         }
-        return loss, loss_state
+        return loss, loss_stat
 
 
 class SqueezeDetWithLoss(nn.Module):
@@ -207,13 +203,13 @@ class SqueezeDet(nn.Module):
     """ Inference Model"""
     def __init__(self, args):
         super(SqueezeDet, self).__init__()
-        self.base = SqueezeDetBase(args)
+        self.base = SqueezenetDet(args)
         self.resolver = PredictionResolver(args, log_softmax=False)
 
     def forward(self, batch):
         pred = self.base(batch['image'])
         pred_class_labels, _, pred_scores, _, pred_boxes = self.resolver(pred)
-        pred_class_probs += pred_scores
+        pred_class_probs *= pred_scores
         pred_class_ids = torch.argmax(pred_class_probs, dim=2)
         pred_scores = torch.max(pred_class_probs, dim=2)[0]
         det = {'class_ids': pred_class_ids,
@@ -221,6 +217,3 @@ class SqueezeDet(nn.Module):
               'boxes': pred_boxes}
 
         return det
-
-
-print('Hi Tesla! I am model')

@@ -75,7 +75,7 @@ class Detector(object):
             end = time.time()
 
             if iter_id % self.args.print_interval == 0:
-                print('eval: [(0)/{1}] | data {2;.3f}s | net{:.3f}s'.format(
+                print('eval: [(0)/{1}] | data {2:.3f}s | net{:.3f}s'.format(
                     iter_id, num_iters, data_timer.val, net_timer.val))
 
         total_time = time.time() - start_time
@@ -108,7 +108,7 @@ class Detector(object):
 
             filtered_class_ids.append(class_ids_cur_class[keeps])
             filtered_scores.append(scores_cur_class[keeps])
-            filtered_boxes.append(boxes_cur_class[keeps])
+            filtered_boxes.append(boxes_cur_class[keeps, :])
 
         filtered_class_ids = torch.cat(filtered_class_ids)
         filtered_scores = torch.cat(filtered_scores)

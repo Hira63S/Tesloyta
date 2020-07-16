@@ -83,7 +83,7 @@ class BaseDataset(torch.utils.data.Dataset):
         gt = np.zeros((self.num_anchors, self.num_classes + 9), dtype=np.float32)
 
         gt[anchor_indices, 0] = 1.
-        gt[anchor_indice, 1:5] = boxes
+        gt[anchor_indices, 1:5] = boxes
         gt[anchor_indices, 5:9] = deltas
         gt[anchor_indices, 9+class_ids] = 1.   # class logits
 

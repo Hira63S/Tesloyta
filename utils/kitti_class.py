@@ -15,7 +15,7 @@ class KITTI(BaseDataset):
         super(KITTI,self).__init__(phase, args)
 
         self.input_size = (384, 1248)
-        self.class_names = ('Car', 'Pedestrian', 'Cyclist', 'Truck', 'Van')
+        self.class_names = ('Car', 'Pedestrian', 'Cyclist')
         self.rgb_mean = np.array([93.877, 98.801, 95.923], dtype=np.float32).reshape(1, 1, 3)
         self.rgb_std = np.array([78.782, 80.130, 81.200], dtype=np.float32).reshape(1, 1, 3)
 
@@ -41,7 +41,7 @@ class KITTI(BaseDataset):
             else 'trainval.txt' if self.phase == 'trainval' \
             else None
 
-        sample_ids_path = os.path.join(self.data_dir, 'image_sets', sample_set_name)
+        sample_ids_path = os.path.join(self.data_dir, '/home/sunshine/squeezedetect/data/kitti/image_sets', sample_set_name)
         with open(sample_ids_path, 'r') as fp:
             sample_ids = fp.readlines()
         sample_ids = tuple(x.strip() for x in sample_ids)
@@ -50,13 +50,13 @@ class KITTI(BaseDataset):
 
     def load_image(self, index):
         image_id = self.sample_ids[index]
-        image_path = os.path.join(self.data_dir, 'training/image_2', image_id + '.png')
+        image_path = os.path.join(self.data_dir, '/home/sunshine/squeezedetect/data/kitti/training/image_2', image_id + '.png')
         image = skimage.io.imread(image_path).astype(np.float32)
         return image, image_id
 
     def load_annotations(self, index):
         ann_id = self.sample_ids[index]
-        ann_path = os.path.join(self.data_dir, 'training/label_2', ann_id + '.txt')
+        ann_path = os.path.join(self.data_dir, '/home/sunshine/squeezedetect/data/kitti/training/label_2', ann_id + '.txt')
         with open(ann_path, 'r') as fp:
             annotations = fp.readlines()
 

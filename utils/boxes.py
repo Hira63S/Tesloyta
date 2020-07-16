@@ -57,9 +57,9 @@ def generate_anchors(grid_size, input_size, anchors_seed):
     )
     anchors_center = np.stack((anchors_center_x, anchors_center_y), axis=2)
     anchors_center = np.repeat(
-    np.reshape(
-        anchors_center, (grid_height, grid_width, 1, 2)
-    ), anchors_per_grid, axis =2
+        np.reshape(
+            anchors_center, (grid_height, grid_width, 1, 2)
+            ), anchors_per_grid, axis =2
     )
     anchors_xywh = np.concatenate((anchors_center, anchors_shape), axis=3)
 
@@ -77,7 +77,7 @@ def compute_overlaps(boxes, box):
 
     inter = lr * tb
     union = (boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1]) + \
-            (boxes[2] - box[0]) * (box[3] - box[1]) - inter
+            (box[2] - box[0]) * (box[3] - box[1]) - inter
 
     return inter / (union + EPSILON)
 
@@ -103,7 +103,7 @@ def compute_deltas(boxes_xyxy, anchors_xywh):
         # sort for the largest overlap
         for ov_idx in np.argsort(-overlaps):
             # when overlap is zero break
-            if overlap[ov_idx] <= 0:
+            if overlaps[ov_idx] <= 0:
                 break
             if ov_idx not in anchor_indices_set:
                 anchor_indices_set.add(ov_idx)

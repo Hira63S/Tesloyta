@@ -1,5 +1,6 @@
 import torch
 import torchvision
+import time
 
 from metriclogger import MetricLogger
 
@@ -7,7 +8,7 @@ class Trainer():
     def __init__(self, model, optimizer, lr_scheduler, args):
         self.model = model
         self.optimizer = optimizer
-        self.lr_scheduler = scheduler
+        self.lr_scheduler = lr_scheduler
         self.args = args
         self.set_device(args.gpus, args.chunk_sizes, args.device)
         self.metrics = ['loss', 'class_labels', 'score_loss', 'bbox_loss']
@@ -23,8 +24,8 @@ class Trainer():
 
         metric_loggers = {m: MetricLogger() for m in self.metrics}
         data_timer, net_timer = MetricLogger(), MetricLogger()
-        num_iters = len(data_laoder) if self.args.num_iters < 0 else self.args.num_iters
-        end = end.time()
+        num_iters = len(data_loader) if self.args.num_iters < 0 else self.args.num_iters
+        end = time.time()
 
         for iter_id, batch in enumerate(data_loader):
             if iter_id >= num_iters:  # num_iters num samples/batch_size

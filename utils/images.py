@@ -4,7 +4,7 @@ import cv2
 import matplotlib.pyplot as plt
 
 
-def whiten(image, image_met, mean=0., std=1.):
+def whiten(image, image_meta, mean=0., std=1.):
     """
     Whitens the image by subtracting the mean and dividing by the std
 
@@ -79,7 +79,7 @@ def flip(image, image_meta, prob=0., boxes=None):
         boxes[:, 0] = image_width - 1 - boxes[:, 2]
         boxes[:, 2] = boxes[:, 0] + boxes_widths
 
-    image_meta.updates({'flipped': flipped})
+    image_meta.update({'flipped': flipped})
 
     return image, image_meta, boxes
 

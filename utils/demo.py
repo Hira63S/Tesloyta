@@ -22,7 +22,7 @@ def demo(args):
     args.gpus = [-1]
     args.debug = 2    # visualize detection boxes
     dataset = KITTI('val', args)
-    args = Config().update_dataset_info(args, dataset)
+    args = Args().update_dataset_info(args, dataset)
 
     preprocess_func = dataset.preprocess
     del dataset
@@ -33,7 +33,7 @@ def demo(args):
     detector = Detector(model.to(args.device), args)
 
     # prepare images
-    sample_images_dir = '../data/kitti/testing/samples'
+    sample_images_dir = '../data/kitti/samples'
     sample_image_paths = glob.glob(os.path.join(sample_images_dir, '*.png'))
 
     # detection
@@ -42,6 +42,11 @@ def demo(args):
         image_meta = {'image_id': os.path.basename(path)[:-4],
                       'orig_size': np.array(image.shape, dtype=np.int32)}
 
+        image, image_meta, _ = preprocess_func(image, image_meta)
+        image = torch.from_numpy(image.transpose(2,0,1)).unsqueeze(0).to(args.device)
+        image_meta = {k: torch.from_numpy(v).unsqueeze(0).to(args.device) if isinstance(v, np.ndarray)
+                     else [v] for k, v in image_meta.items()}
+                     
         inp = {'image': image,
                'image_meta': image_meta}
 
