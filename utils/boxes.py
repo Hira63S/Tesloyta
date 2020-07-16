@@ -134,7 +134,7 @@ def compute_deltas(boxes_xyxy, anchors_xywh):
 
     return deltas, anchor_indices
 
-def boxes_postprocess(boxes, image_image):
+def boxes_postprocess(boxes, image_meta):
 
     if 'scales' in image_meta:
         boxes[:, [0, 2]] /= image_meta['scales'][1]

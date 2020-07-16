@@ -27,11 +27,11 @@ class Fire(nn.Module):
 
     def forward(self, x):
         x = self.squeeze_activation(self.squeeze(x))
-        final_conv = torch.cat([
+        x = torch.cat([
             self.expand1x1_activation(self.expand1x1(x)),
             self.expand3x3_activation(self.expand3x3(x))
         ], dim=1)
-        return final_conv
+        return x
 
 
 class SqueezenetDet(nn.Module):
@@ -123,16 +123,16 @@ class PredictionResolver(nn.Module):
         self.anchors = torch.from_numpy(args.anchors).unsqueeze(0).float()
         self.anchors_per_grid = args.anchors_per_grid
 
-        def forward(self, pred):
-            pred_class_probs = safe_softmax(pred[..., :self.num_classes].contiguous(), dim=-1)
-            pred_log_class_probs = None if not self.log_softmax else \
-                torch.log_softmax(pred[..., :self.num_classes].contiguous(), dim=-1)   # this would not include the +1 for C so we will
-            # be fine because we will only have the number of probablities for all the classes expected
-            pred_scores = torch.sigmoid(pred[..., self.num_classes:self.num_classes + 1].contiguous())
-            pred_deltas = pred[..., self.num_classes + 1:].contiguous()
-            pred_boxes = deltas_to_boxes(pred_deltas, self.anchors.to(pred_deltas, device),
-                                         input_size=self.input_size)
-            return pred_class_probs, pred_log_class_probs, pred_scores, pred_deltas, pred_boxes
+    def forward(self, pred):
+        pred_class_probs = safe_softmax(pred[..., :self.num_classes].contiguous(), dim=-1)
+        pred_log_class_probs = None if not self.log_softmax else \
+            torch.log_softmax(pred[..., :self.num_classes].contiguous(), dim=-1)   # this would not include the +1 for C so we will
+        # be fine because we will only have the number of probablities for all the classes expected
+        pred_scores = torch.sigmoid(pred[..., self.num_classes:self.num_classes + 1].contiguous())
+        pred_deltas = pred[..., self.num_classes + 1:].contiguous()
+        pred_boxes = deltas_to_boxes(pred_deltas, self.anchors.to(pred_deltas.device),
+                                     input_size=self.input_size)
+        return pred_class_probs, pred_log_class_probs, pred_scores, pred_deltas, pred_boxes
 
 
 
@@ -208,7 +208,7 @@ class SqueezeDet(nn.Module):
 
     def forward(self, batch):
         pred = self.base(batch['image'])
-        pred_class_labels, _, pred_scores, _, pred_boxes = self.resolver(pred)
+        pred_class_probs, _, pred_scores, _, pred_boxes = self.resolver(pred)
         pred_class_probs *= pred_scores
         pred_class_ids = torch.argmax(pred_class_probs, dim=2)
         pred_scores = torch.max(pred_class_probs, dim=2)[0]

@@ -9,29 +9,46 @@ import cv2
 
 EPSILON=1E-10
 
-
 def xyxy_to_xywh(boxes_xyxy):
-    assert np.ndim(boxes_xyxy) == 2
-    assert np.all(boxes_xyxy[:, 0] < boxes_xyxy[:, 2])
-    assert np.all(boxes_xyxy[:, 1] < boxes_xyxy[:, 3])
-
-    return np.concatenate([
-        (boxes_xyxy[:, [0]] + boxes_xyxy[:, [2]]) / 2.,
-        (boxes_xyxy[:, [1]] + boxes_xyxy[:, [3]]) / 2.,
-        boxes_xyxy[:, [2]] - boxes_xyxy[:, [0]] + 1.,
-        boxes_xyxy[:, [3]] - boxes_xyxy[:, [1]] + 1.
-    ], axis=1)
+    assert torch.all(boxes_xyxy[..., 0] < boxes_xyxy[..., 2])
+    assert torch.all(boxes_xyxy[..., 1] < boxes_xyxy[..., 3])
+    return torch.cat([
+        (boxes_xyxy[..., [0]] + boxes_xyxy[..., [2]]) / 2.,
+        (boxes_xyxy[..., [1]] + boxes_xyxy[..., [3]]) / 2.,
+        boxes_xyxy[..., [2]] - boxes_xyxy[..., [0]] + 1.,
+        boxes_xyxy[..., [3]] - boxes_xyxy[..., [1]] + 1.
+    ], dim = -1)
 
 def xywh_to_xyxy(boxes_xywh):
-    assert np.ndim(boxes_xywh) == 2
-    assert np.all(boxes_xywh[:, [2, 3]] > 0)
-
-    return np.concatenate([
-        boxes_xywh[:, [0]] - 0.5 * (boxes_xywh[:, [2]] -1),
-        boxes_xywh[:, [1]] - 0.5 * (boxes_xywh[:, [3]] -1),
-        boxes_xywh[:, [0]] + 0.5 * (boxes_xywh[:, [2]] -1),
-        boxes_xywh[:, [1]] + 0.5 * (boxes_xywh[:, [3]] -1)
-    ], axis=1)
+    assert torch.all(boxes_xywh[..., [2, 3]] > 0)
+    return torch.cat([
+        boxes_xywh[..., [0]] - 0.5 * (boxes_xywh[..., [2]] - 1),
+        boxes_xywh[..., [1]] - 0.5 * (boxes_xywh[..., [3]] - 1),
+        boxes_xywh[..., [0]] + 0.5 * (boxes_xywh[..., [2]] - 1),
+        boxes_xywh[..., [1]] + 0.5 * (boxes_xywh[..., [3]] - 1)
+    ], dim=-1)
+# def xyxy_to_xywh(boxes_xyxy):
+#     assert np.ndim(boxes_xyxy) == 2
+#     assert np.all(boxes_xyxy[:, 0] < boxes_xyxy[:, 2])
+#     assert np.all(boxes_xyxy[:, 1] < boxes_xyxy[:, 3])
+#
+#     return np.concatenate([
+#         (boxes_xyxy[:, [0]] + boxes_xyxy[:, [2]]) / 2.,
+#         (boxes_xyxy[:, [1]] + boxes_xyxy[:, [3]]) / 2.,
+#         boxes_xyxy[:, [2]] - boxes_xyxy[:, [0]] + 1.,
+#         boxes_xyxy[:, [3]] - boxes_xyxy[:, [1]] + 1.
+#     ], axis=-1)
+#
+# def xywh_to_xyxy(boxes_xywh):
+#     assert np.ndim(boxes_xywh) == 2
+#     assert np.all(boxes_xywh[:, [2, 3]] > 0)
+#
+#     return np.concatenate([
+#         boxes_xywh[:, [0]] - 0.5 * (boxes_xywh[:, [2]] -1),
+#         boxes_xywh[:, [1]] - 0.5 * (boxes_xywh[:, [3]] -1),
+#         boxes_xywh[:, [0]] + 0.5 * (boxes_xywh[:, [2]] -1),
+#         boxes_xywh[:, [1]] + 0.5 * (boxes_xywh[:, [3]] -1)
+#     ], axis=1)
 
 def deltas_to_boxes(deltas, anchors, input_size):
     """

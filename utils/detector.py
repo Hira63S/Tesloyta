@@ -43,7 +43,7 @@ class Detector(object):
                 visualize_boxes(image, det['class_ids'], det['boxes'], det['scores'],
                                 class_names = self.args.class_names,
                                 save_path=save_path,
-                                show=self.ags.mode=='demo')
+                                show=self.args.mode=='demo')
         return results
 
     def detect_dataset(self, dataset):
