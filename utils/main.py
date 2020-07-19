@@ -13,5 +13,8 @@ if args.mode == 'train':
 elif args.mode == 'demo':
     from demo import demo
     demo(args)
+elif args.mode == 'vid_demo':
+    from video import vid_demo
+    vid_demo(args)
 else:
     raise ValueError('Mode {} is invalid.'.format(args.mode))

@@ -5,7 +5,10 @@ import os
 class Args(object):
     def __init__(self):
         self.parser = argparse.ArgumentParser()
-
+        # video evaluation
+        self.parser.add_argument("--model", required=False, help='path to pre-trained model.')
+        self.parser.add_argument("--input", default=0, help='input source')
+        self.parser.add_argument("--output", help='where to write the processed file at')
         # experiment
         self.parser.add_argument("--mode", help='train | eval | demo')
         self.parser.add_argument("--dataset", default='kitti',
@@ -24,13 +27,14 @@ class Args(object):
         self.parser.add_argument("--dropout_prob", type=float, default=0.5, help='prob of dropout')
 
         # train
+        self.parser.add_argument("--input_size", type=tuple, default=(384, 1248), help='input images size')
         self.parser.add_argument("--num_classes", default=5, help="num of classes to train")
         self.parser.add_argument("--momentum", type=float, default=0.9, help='momentum of SGD.')
         self.parser.add_argument("--grad_norm", type=float, default=5., help='max norm of the gradients.' )
         self.parser.add_argument("--num_epochs", type=int, default=30, help='total training epochs.')
         self.parser.add_argument("--num_iters", type=int, default=-1, help='default: # samples/batch_size')
         self.parser.add_argument("--batch_size", type=int, default=20, help = 'batch_size')
-#        self.parser.add_argument('--num_iters', type=int, default=-1, help='default: # samples/ batch_size')
+        self.parser.add_argument('--num_anchors', type=int, default=9, help='default: # samples/ batch_size')
         self.parser.add_argument("--lr", type=float, default=0.01, help='learning rate')
         self.parser.add_argument("--weight_decay", type=float, default=0.0001, help='wegiht deay of adam')
         self.parser.add_argument("--master_batch_size", type=int, default=-1, help = 'batch_size on the master GPU')
@@ -45,7 +49,7 @@ class Args(object):
         self.parser.add_argument("--positive_score_loss_weight", type = float, default=3.75, help = 'positive weight of score pred loss')
         self.parser.add_argument("--negative_score_loss_weight",type=float, default=100., help = 'negative weight of score prediction loss.')
         self.parser.add_argument("--bbox_loss_weight",type=float, default=6., help = 'weight of boxes reg loss')
-#        self.parser.add_argument("-", "", required= , help = '')
+        self.parser.add_argument("--anchors_per_grid", type=int, default=9, help ='anchors per grid')
         # inference
 
         self.parser.add_argument("--nms_thresh", type=float, default=0.4, help='discards all overlapping boxes with IoU < nms_thresh.')

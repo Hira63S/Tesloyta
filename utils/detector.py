@@ -151,12 +151,4 @@ class DataWrapper(torch.utils.data.Dataset):
 
 
 
-
-
-
-
-
-
-
-
 print("Hello Tesla! I am detective Squee")
