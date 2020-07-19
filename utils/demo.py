@@ -12,6 +12,7 @@ from detector import Detector
 from SqueezeNet_detect import SqueezeDet
 from config import Args
 from load_model import load_model
+from imutils.video import VideoStream
 
 def demo(args):
     """
@@ -21,11 +22,12 @@ def demo(args):
     args.load_model = 'squeezedet_kitti_epoch280.pth'
     args.gpus = [-1]
     args.debug = 2    # visualize detection boxes
-    dataset = KITTI('val', args)
-    args = Args().update_dataset_info(args, dataset)
+    vs = VideoStream(src=0).start()
+    frame = vs.read()
+    args = Args().update_frame_info(args, frame)
 
-    preprocess_func = dataset.preprocess
-    del dataset
+    preprocess_func = frame.preprocess
+#    del frame
 
     # prepare the model and detector
     model = SqueezeDet(args)
@@ -33,8 +35,8 @@ def demo(args):
     detector = Detector(model.to(args.device), args)
 
     # prepare images
-    sample_images_dir = '../data/kitti/samples'
-    sample_image_paths = glob.glob(os.path.join(sample_images_dir, '*.png'))
+#    sample_images_dir = '../data/kitti/samples'
+#    sample_image_paths = glob.glob(os.path.join(sample_images_dir, '*.png'))
 
     # detection
     for path in tqdm.tqdm(sample_image_paths):
@@ -46,7 +48,7 @@ def demo(args):
         image = torch.from_numpy(image.transpose(2,0,1)).unsqueeze(0).to(args.device)
         image_meta = {k: torch.from_numpy(v).unsqueeze(0).to(args.device) if isinstance(v, np.ndarray)
                      else [v] for k, v in image_meta.items()}
-                     
+
         inp = {'image': image,
                'image_meta': image_meta}
 

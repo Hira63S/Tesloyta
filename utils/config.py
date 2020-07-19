@@ -115,6 +115,18 @@ class Args(object):
         return args
 
     @staticmethod
+    def update_frame_info(args, frame):
+        args.input_size = frame.input_size
+        args.rgb_mean = frame.rgb_mean
+        args.rgb_std = frame.rgb_std
+        args.class_names = frame.class_names
+        args.num_classes = frame.num_classes
+        args.anchors = frame.anchors
+        args.anchors_per_grid = frame.anchors_per_grid
+        args.num_anchors = frame.num_anchors
+        return args
+
+    @staticmethod
     def print(args):
         names = list(dir(args))
         for name in sorted(names):
