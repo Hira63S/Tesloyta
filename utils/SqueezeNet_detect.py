@@ -128,7 +128,7 @@ class PredictionResolver(nn.Module):
         # be fine because we will only have the number of probablities for all the classes expected
         pred_scores = torch.sigmoid(pred[..., self.num_classes:self.num_classes + 1].contiguous())
         pred_deltas = pred[..., self.num_classes + 1:].contiguous()
-        pred_boxes = deltas_to_boxes(pred_deltas, self.anchors.to(pred_deltas, device),
+        pred_boxes = deltas_to_boxes(pred_deltas, self.anchors.to(pred_deltas.device),
                                      input_size=self.input_size)
         return pred_class_probs, pred_log_class_probs, pred_scores, pred_deltas, pred_boxes
 
