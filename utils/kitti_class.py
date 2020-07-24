@@ -125,7 +125,4 @@ class KITTI(BaseDataset):
         return aps
 
 
-
-
-
 print('HEllo Tesla! I am kitti_class')

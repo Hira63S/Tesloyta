@@ -1,9 +1,10 @@
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.nn.init as init
 from torch.utils.model_zoo import load_url as load_state_dict_from_url
 from resolver import deltas_to_boxes, compute_overlaps, safe_softmax
-
+from boxes import generate_anchors
 __all__ = ['SqueezeNet', 'squeezenet1_0', 'squeezenet1_1']
 
 model_urls = {
@@ -118,8 +119,14 @@ class PredictionResolver(nn.Module):
         self.log_softmax = log_softmax
         self.input_size = args.input_size
         self.num_classes = args.num_classes
-        self.anchors = torch.from_numpy(args.anchors).unsqueeze(0).float()
-        self.anchors_per_grid = args.anchors_per_grid
+        self.grid_size = tuple(x // 16 for x in self.input_size)
+        self.anchors_seed = np.array([[34, 30], [75, 45], [38, 90],
+                                      [127, 68], [80, 174], [196, 97],
+                                      [194, 178], [283, 156], [381, 185]], dtype=np.float32)
+        self.gen_anchors = generate_anchors(self.grid_size, self.input_size, self.anchors_seed)
+        self.anchors = torch.from_numpy(self.gen_anchors).unsqueeze(0).float()
+        self.anchors_per_grid = self.anchors_seed.shape[0]
+
 
     def forward(self, pred):
         pred_class_probs = safe_softmax(pred[..., :self.num_classes].contiguous(), dim=-1)
@@ -128,7 +135,7 @@ class PredictionResolver(nn.Module):
         # be fine because we will only have the number of probablities for all the classes expected
         pred_scores = torch.sigmoid(pred[..., self.num_classes:self.num_classes + 1].contiguous())
         pred_deltas = pred[..., self.num_classes + 1:].contiguous()
-        pred_boxes = deltas_to_boxes(pred_deltas, self.anchors.to(pred_deltas, device),
+        pred_boxes = deltas_to_boxes(pred_deltas, self.anchors.to(pred_deltas.device),
                                      input_size=self.input_size)
         return pred_class_probs, pred_log_class_probs, pred_scores, pred_deltas, pred_boxes
 

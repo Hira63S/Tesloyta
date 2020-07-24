@@ -28,7 +28,7 @@ class Args(object):
 
         # train
         self.parser.add_argument("--input_size", type=tuple, default=(384, 1248), help='input images size')
-        self.parser.add_argument("--num_classes", default=5, help="num of classes to train")
+        self.parser.add_argument("--num_classes", type=int, default=3, help="num of classes to train")
         self.parser.add_argument("--momentum", type=float, default=0.9, help='momentum of SGD.')
         self.parser.add_argument("--grad_norm", type=float, default=5., help='max norm of the gradients.' )
         self.parser.add_argument("--num_epochs", type=int, default=30, help='total training epochs.')
@@ -66,11 +66,12 @@ class Args(object):
         self.parser.add_argument("--not_cuda_benchmark", action='store_true',
                                 help="disable when the input size is not fixed.")
 
-    def parse(self, cfg = ''):
-        if cfg == '':
-            args = self.parser.parse_args()
-        else:
-            args = self.parser.parse_args(args)
+    def parse(self, args = ''):
+        # if cfg == '':
+        #     args = self.parser.parse_args()
+        # else:
+        #
+        args = self.parser.parse_args(args)
 
         args.gpus_str = args.gpus
         args.gpus = [int(gpu) for gpu in args.gpus.split(',')]
@@ -114,17 +115,17 @@ class Args(object):
         args.num_anchors = dataset.num_anchors
         return args
 
-    @staticmethod
-    def update_frame_info(args, frame):
-        args.input_size = frame.input_size
-        args.rgb_mean = frame.rgb_mean
-        args.rgb_std = frame.rgb_std
-        args.class_names = frame.class_names
-        args.num_classes = frame.num_classes
-        args.anchors = frame.anchors
-        args.anchors_per_grid = frame.anchors_per_grid
-        args.num_anchors = frame.num_anchors
-        return args
+    # @staticmethod
+    # def update_frame_info(args, frame):
+    #     args.input_size = frame.input_size
+    #     args.rgb_mean = frame.rgb_mean
+    #     args.rgb_std = frame.rgb_std
+    #     args.class_names = frame.class_names
+    #     args.num_classes = frame.num_classes
+    #     args.anchors = frame.anchors
+    #     args.anchors_per_grid = frame.anchors_per_grid
+    #     args.num_anchors = frame.num_anchors
+    #     return args
 
     @staticmethod
     def print(args):

@@ -22,11 +22,12 @@ def demo(args):
     args.load_model = 'squeezedet_kitti_epoch280.pth'
     args.gpus = [-1]
     args.debug = 2    # visualize detection boxes
-    vs = VideoStream(src=0).start()
-    frame = vs.read()
-    args = Args().update_frame_info(args, frame)
+    # vs = VideoStream(src=0).start()
+    # frame = vs.read()
+    dataset = KITTI('val', args)
+    args = Args().update_dataset_info(args, dataset)
 
-    preprocess_func = frame.preprocess
+    preprocess_func = dataset.preprocess
 #    del frame
 
     # prepare the model and detector
@@ -35,8 +36,8 @@ def demo(args):
     detector = Detector(model.to(args.device), args)
 
     # prepare images
-#    sample_images_dir = '../data/kitti/samples'
-#    sample_image_paths = glob.glob(os.path.join(sample_images_dir, '*.png'))
+    sample_images_dir = '../data/kitti/samples'
+    sample_image_paths = glob.glob(os.path.join(sample_images_dir, '*.png'))
 
     # detection
     for path in tqdm.tqdm(sample_image_paths):

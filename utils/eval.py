@@ -1,17 +1,17 @@
 import torch
 import torch.utils.data
 
-from engine.detector import Detector
-from model.squeezedet import SqueezeDet
-from utils.config import Config
-from utils.model import load_model
-from utils.misc import load_dataset
+from detector import Detector
+from SqueezeNet_detect import SqueezeDet
+from config import Args
+from load_model import load_model
+from train import load_dataset
 
 
 def eval(cfg):
     dataset = load_dataset(cfg.dataset)('val', cfg)
-    cfg = Config().update_frame_info(cfg, dataset)
-    Config().print(cfg)
+    cfg = Args().update_dataset_info(cfg, dataset)
+    Args().print(cfg)
 
     aps = eval_dataset(dataset, cfg.load_model, cfg)
     for k, v in aps.items():
