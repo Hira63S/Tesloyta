@@ -67,11 +67,10 @@ class Args(object):
                                 help="disable when the input size is not fixed.")
 
     def parse(self, args = ''):
-        # if cfg == '':
-        #     args = self.parser.parse_args()
-        # else:
-        #
-        args = self.parser.parse_args(args)
+        if args == '':
+            args = self.parser.parse_args()
+        else:
+            args = self.parser.parse_args(args)
 
         args.gpus_str = args.gpus
         args.gpus = [int(gpu) for gpu in args.gpus.split(',')]
