@@ -65,6 +65,7 @@ class Args(object):
                                 help="random seed")
         self.parser.add_argument("--not_cuda_benchmark", action='store_true',
                                 help="disable when the input size is not fixed.")
+        self.parser.add_argument("--root_dir", help="if there is a need for debugging")
 
     def parse(self, args = ''):
         if args == '':
@@ -93,7 +94,7 @@ class Args(object):
             args.chunk_sizes.append(captain_chunk_size)
         print('trainig chunk_size:', args.chunk_sizes)
 
-        args.root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        # args.root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
         args.data_dir = os.path.join(args.root_dir, 'data')
         args.exp_dir = os.path.join(args.root_dir, 'exp')
         args.save_dir = os.path.join(args.exp_dir, args.exp_id)
