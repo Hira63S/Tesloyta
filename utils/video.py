@@ -32,28 +32,31 @@ def vid_demo(args):
     model = load_model(model, args.load_model)
     detector = Detector(model.to(args.device), args)
 
-    print('Dector Loaded')
+    print('Detector Loaded')
     # # prepare images
     # sample_images_dir = '../data/kitti/samples'
     # sample_image_imgs = glob.glob(os.img.join(sample_images_dir, '*.png'))
 
 print("[INFO] starting video stream ...")
-# vs = VideoStream(src=0).start()
-# fps = FPS().start()
+
 # loop over the fraamesfrom the threaded video stream:
-capture = cv2.VideoCapture(-1)
-frame_width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
-frame_height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
-fps = capture.get(cv2.CAP_PROP_FPS)
+# capture = VideoStream(src=0).start()
+# fps = FPS().start()
+# frame_width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
+# frame_height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+# fps = capture.get(cv2.CAP_PROP_FPS)
+
+capture = cv2.VideoCapture(0)
 
 print("CV_Frame_width: '{}'")
 
 
 while True:
 
-    frame = vs.read()
+    ret, frame = capture.read()
     frame = imutils.resize(frame, width=1248, height=384)
 
+    print(type(frame))
 
     cv2.imshow("frame", frame)
 
@@ -61,8 +64,8 @@ while True:
     if key == ord("q"):
         break
 
-    fps.update()
-fps.stop()
+#     fps.update()
+# fps.stop()
 
 cv2.destroyAllWindows()
     # pass through the model:
