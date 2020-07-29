@@ -15,6 +15,7 @@ import tqdm
 import skimage.io
 import imutils
 import PIL
+from video import preprocess_func
 
 args = Args().parse()
 
@@ -24,64 +25,62 @@ def vid_demo(args):
     """
 
     args.load_model = 'squeezedet_kitti_epoch280.pth'
-    args.gpus = [0]
+    args.gpus = [-1]
     args.debug = 2    # visualize detection boxes
 
-    # prepare the model and detector
-    print("[INFO] loading model ... ")
-    model = SqueezeDet(args)
-    model = load_model(model, args.load_model)
-    detector = Detector(model.to(args.device), args)
-
     print('Detector Loaded')
-    # # prepare images
-    # sample_images_dir = '../data/kitti/samples'
-    # sample_image_imgs = glob.glob(os.img.join(sample_images_dir, '*.png'))
 
     print("[INFO] starting video stream ...")
-    vs = VideoStream(src=0).start()
-    fps = FPS().start()
+
+    capture = cv2.VideoCapture(0)
+    frame_width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
+    frame_height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    fps = capture.get(cv2.CAP_PROP_FPS)
+    frame_index = capture.get(cv2.CAP_PROP_FRAME_COUNT) - 1
+
+    print("Frame_width is: {}, Frame_height is: {}, Total FPS are: {}".format(frame_width, frame_height, fps))
+
     # loop over the fraamesfrom the threaded video stream:
 
-    while True:
+    while capture.isOpened():
 
-        frame = vs.read()
-        frame = imutils.resize(frame, width=1248, height=384)
+        ret, frame = capture.read()
+        frame = cv2.resize(frame, (1248, 384))
+
         print(type(frame))
+        print(frame.shape)
 #        model.eval()
         model = SqueezeDet(args)
         model = load_model(model, args.load_model)
-        detector = Detector(model.to(args.device), args)
+        detector = Detector(model.to(args.device), args)     # detector takes care of the model.eval()
 
-        # detectio
-        for img in tqdm.tqdm(frame):
-            # image = frame
-            # image = skimage.io.imread(img).astype(np.float32)
-            # image_meta = {'image_id': os.path.basename(img)[:-4],
-            # 'orig_size': np.array(frame.shape, dtype=np.int32)}
-            #
-            # image, image_meta, _ = preprocess_func(frame, image_meta)
-            # image = torch.from_numpy(image.transpose(2,0,1)).unsqueeze(0).to(args.device)
-            # image_meta = {k: torch.from_numpy(v).unsqueeze(0).to(args.device) if isinstance(v, np.ndarray)
-            # else [v] for k, v in image_meta.items()}
-            #
-            # inp = {'image': image,
-            # 'image_meta': image_meta}
+        if ret is True:
+            # detection
+    #        for image in tqdm.tqdm(frame):
 
-            frame = detector.detect(img)
+                # image = skimage.io.imread(img).astype(np.float32)
+            image = torch.from_numpy(frame.transpose(2, 0, 1)).unsqueeze(0).to(args.device)
+            image_meta = {'image_id': capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index),
+            'orig_size': np.array(image.shape, dtype=np.int32)}
 
-        cv2.imshow("Frame", frame)
-        if cv2.waitKey(1) & 0xFF:
-            cv2.destroyAllWindows()
-            vs.stop()
+            image, image_meta, _ = preprocess_func(image, image_meta)
+            image = torch.from_numpy(image.transpose(2,0,1)).unsqueeze(0).to(args.device)
+            print(type(image))
+            image_meta = {k: torch.from_numpy(v).unsqueeze(0).to(args.device) if isinstance(v, np.ndarray)
+            else [v] for k, v in image_meta.items()}
 
+            inp = {'image': image,
+            'image_meta': image_meta}
+            print(image.shape)
+            # img = torch.from_numpy(img)
+            frame = detector.detect(inp)
 
-    cv2.imshow("frame", frame)
+            cv2.imshow("Frame", frame)
+            if cv2.waitKey(1) & 0xFF == ord('1'):
+                break
 
-    cv2.waitKey(0)
-
-    fps.update()
-    fps.stop()
-
+    # fps.update()
+    # fps.stop()
+    capture.release()
     cv2.destroyAllWindows()
     print('Hi Tesla! I am demo ')

@@ -1,98 +1,35 @@
 import torch
 import torch.utils.data
-from imutils.video import FPS
-import argparse
-import cv2
+from images import whiten, drift, flip, resize, crop_or_pad
+from boxes import compute_deltas, visualize_boxes
 import numpy as np
-from load_model import load_model, load_official_model
-from SqueezeNet_detect_vid import SqueezeDet
-from detector import Detector
 from config import Args
-from imutils.video import VideoStream
-import os
-import glob
-import tqdm
-import skimage.io
-import imutils
 
 args = Args().parse()
 
-def vid_demo(args):
+def preprocess_func(image, image_meta, boxes=None):
     """
-    demo for the model
+    Performs preprocessing on images
     """
+    rgb_mean = (np.array([93.877, 98.801, 95.923], dtype=np.float32).reshape(1, 1, 3))
+    rgb_std = (np.array([78.782, 80.130, 81.200], dtype=np.float32).reshape(1, 1, 3))
 
-    args.load_model = 'squeezedet_kitti_epoch280.pth'
-    args.gpus = [-1]
-    args.debug = 2    # visualize detection boxes
+    if boxes is not None:
+        # [x, y, w, h] -> 0, 2 -> x and width
+        # a, min max -> boxes x1 and x2 coordinations, min is 0 and max is the orig_size of input
+        boxes[:, [0, 2]] = np.clip(boxes[:, [0, 2]], 0., image_meta['orig_size'][1] - 1.)  # min max out -> deals with the width
+        boxes[:, [1, 3]] = np.clip(boxes[:, [1, 3]], 0., image_meta['orig_size'][0] - 1.)   # deals with the height
 
-    # prepare the model and detector
-    print("[INFO] loading model ... ")
-    model = SqueezeDet(args)
-    model = load_model(model, args.load_model)
-    detector = Detector(model.to(args.device), args)
+    drift_prob = 0.
+    flip_prob = 0.
 
-    print('Detector Loaded')
-    # # prepare images
-    # sample_images_dir = '../data/kitti/samples'
-    # sample_image_imgs = glob.glob(os.img.join(sample_images_dir, '*.png'))
+    #image, image_meta = whiten(image, image_meta, mean=rgb_mean, std=rgb_std)
+    image, image_meta, boxes = drift(image, image_meta, prob=drift_prob, boxes=boxes)
+    image,image_meta, boxes = flip(image, image_meta, prob=flip_prob, boxes=boxes)
 
-print("[INFO] starting video stream ...")
+#     if args.forbid_resize:
+#         image, image_meta, boxes = crop_or_pad(image, image_meta, args.input_size, boxes=boxes)
+#     else:
+#    image, image_meta, boxes = resize(image, image_meta, (384, 1248), boxes=boxes)
 
-# loop over the fraamesfrom the threaded video stream:
-# capture = VideoStream(src=0).start()
-# fps = FPS().start()
-# frame_width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
-# frame_height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
-# fps = capture.get(cv2.CAP_PROP_FPS)
-
-capture = cv2.VideoCapture(0)
-
-print("CV_Frame_width: '{}'")
-
-
-while True:
-
-    ret, frame = capture.read()
-    frame = imutils.resize(frame, width=1248, height=384)
-
-    print(type(frame))
-
-    cv2.imshow("frame", frame)
-
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord("q"):
-        break
-
-#     fps.update()
-# fps.stop()
-
-cv2.destroyAllWindows()
-    # pass through the model:
-#         model.eval()
-#         dets = model(frame)
-#         print(dets)
-#         #
-#         # detection
-#         for img in tqdm.tqdm(frame):
-#             image = skimage.io.imread(img).astype(np.float32)
-#             image_meta = {'image_id': os.img.basename(img)[:-4],
-#                           'orig_size': np.array(image.shape, dtype=np.int32)}
-#
-#             image, image_meta, _ = preprocess_func(image, image_meta)
-#             image = torch.from_numpy(image.transpose(2,0,1)).unsqueeze(0).to(args.device)
-#             image_meta = {k: torch.from_numpy(v).unsqueeze(0).to(args.device) if isinstance(v, np.ndarray)
-#                          else [v] for k, v in image_meta.items()}
-#
-#             inp = {'image': image,
-#                    'image_meta': image_meta}
-#
-#             frm = detector.detect(inp)
-#
-#             cv2.imshow("Frame", frm)
-#             if cv2.waitKey(1) & 0xFF:
-#                 cv2.destroyAllWindows()
-#                 vs.stop()
-#
-#
-# print('Hi Tesla! I am demo ')
+    return image, image_meta, boxes
