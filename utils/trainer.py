@@ -22,6 +22,7 @@ class Trainer():
             self.model.eval()
             torch.cuda.empty_cache()
 
+
         metric_loggers = {m: MetricLogger() for m in self.metrics}
         data_timer, net_timer = MetricLogger(), MetricLogger()
         num_iters = len(data_loader) if self.args.num_iters < 0 else self.args.num_iters
@@ -32,7 +33,7 @@ class Trainer():
                 break
 
             for k in batch:
-                if 'image_meta' not in k:
+                if 'image_meta' not in k:         # 'image_meta' is the target label of the image
                     batch[k] = batch[k].to(device=self.args.device, non_blocking=True)
             data_timer.update(time.time() - end)
             end = time.time()
@@ -79,10 +80,10 @@ class Trainer():
         return self.run_epoch('val', epoch, data_loader)
 
     def set_device(self, gpus, chunk_sizes, device):
-        if len(gpus) == 1:
-#            self.model = DataParallel(self.model, device_ids=gpus,
-#                                      chunk_sizes=chunk_sizes).to(device)
-#        else:
+        if len(gpus) > 1:
+           self.model = DataParallel(self.model, device_ids=gpus,
+                                     chunk_sizes=chunk_sizes).to(device)
+        else:
             self.model = self.model.to(device)
 
         for state in self.optimizer.state.values():

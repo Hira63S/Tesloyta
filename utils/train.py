@@ -95,6 +95,4 @@ def train(args):
     torch.cuda.empty_cache()
 
 
-
-
 print('Hello Tesla!')
