@@ -13,7 +13,8 @@ The goal of this project is to do real-time object detection and explore solutio
 
 <!-- Code Blocks -->
 ```python
-python RaspberryPi/PyScripts/MobileNet_Detection/real_time_object_detection.py --output test.avi --prototxt MobileNetSSD_deploy.prototxt.txt --model MobileNetSSD_deploy.caffemodel
+python RaspberryPi/PyScripts/MobileNet_Detection/real_time_object_detection.py --output \
+test.avi --prototxt MobileNetSSD_deploy.prototxt.txt --model MobileNetSSD_deploy.caffemodel
 ```
 
 ## Research
