@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The goal of this project is to do real-time object detection and explore solutions to a lot of edge cases to make autonomous cars a reality. The project is currently under production to make it a simple downloadable project that can be ran on any embedded device or small single-board computers like Raspberry Pi. After experimenting with the pipeline we were able to deploy a SqueezeDet model trained on KITTI dataset. The accompanying blogpost[https://hira63s.github.io/2020-06-20-SqueezeDet-For-Real-Time-Object-Detection-On-The-Road/] provides more details about the training process and deployment. The model is built on top of the awesome work done by Qui Jueqin and the team, here[https://github.com/QiuJueqin/SqueezeDet-PyTorch]. My implementation is built on their work with a lot more functionality added.
+The goal of this project is to do real-time object detection and explore solutions to a lot of edge cases to make autonomous cars a reality. The project is currently under production to make it a simple downloadable project that can be ran on any embedded device or small single-board computers like Raspberry Pi. After experimenting with the pipeline we were able to deploy a SqueezeDet model trained on KITTI dataset. The accompanying [blogpost](https://hira63s.github.io/2020-06-20-SqueezeDet-For-Real-Time-Object-Detection-On-The-Road/) provides more details about the training process and deployment. The model is built on top of the awesome work done by Qui Jueqin and the team, here[https://github.com/QiuJueqin/SqueezeDet-PyTorch]. My implementation is built on their work with a lot more functionality added.
 
 ## Model
 
