@@ -3,6 +3,7 @@ from torchvision.ops import nms
 from images import image_postprocess
 from boxes import boxes_postprocess, visualize_boxes
 from metriclogger import MetricLogger
+import cv2
 
 
 class Detector(object):
@@ -42,3 +43,55 @@ class Detector(object):
                                  save_path = save_path,
                                  show = self.args.mode=='demo')
         return results
+    #
+    # def detect_frame(self, frame):
+    #
+    #     start_time = time.time()
+    #
+    #     capture = cv2.VideoCapture(0)
+    #
+    #     frame_width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
+    #     frame_height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    #     fps = capture.get(cv2.CAP_PROP_FPS)
+    #     frame_index = capture.get(cv2.CAP_PROP_FRAME_COUNT) - 1
+    #     # load the dataset:
+    #
+    #
+    #     ret, frame = capture.read()
+
+    def filter(self, det):
+            orders = torch.argsort(det['scores'], descending=True)[:self.cfg.keep_top_k]
+            class_ids = det['class_ids'][orders]
+            scores = det['scores'][orders]
+            boxes = det['boxes'][orders, :]
+
+            # class-wise nms
+            filtered_class_ids, filtered_scores, filtered_boxes = [], [], []
+            for cls_id in range(self.cfg.num_classes):
+                idx_cur_class = (class_ids == cls_id)
+                if torch.sum(idx_cur_class) == 0:
+                    continue
+
+                class_ids_cur_class = class_ids[idx_cur_class]
+                scores_cur_class = scores[idx_cur_class]
+                boxes_cur_class = boxes[idx_cur_class, :]
+
+                keeps = nms(boxes_cur_class, scores_cur_class, self.cfg.nms_thresh)
+
+                filtered_class_ids.append(class_ids_cur_class[keeps])
+                filtered_scores.append(scores_cur_class[keeps])
+                filtered_boxes.append(boxes_cur_class[keeps, :])
+
+            filtered_class_ids = torch.cat(filtered_class_ids)
+            filtered_scores = torch.cat(filtered_scores)
+            filtered_boxes = torch.cat(filtered_boxes, dim=0)
+
+            keeps = filtered_scores > self.cfg.score_thresh
+            if torch.sum(keeps) == 0:
+                det = None
+            else:
+                det = {'class_ids': filtered_class_ids[keeps],
+                       'scores': filtered_scores[keeps],
+                       'boxes': filtered_boxes[keeps, :]}
+
+            return det

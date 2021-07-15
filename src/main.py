@@ -1,5 +1,5 @@
 from config import Args
-from metriclogger import init_env
+from utils.misc import init_env
 
 args = Args().parse()
 init_env(args)

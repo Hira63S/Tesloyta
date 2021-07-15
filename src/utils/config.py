@@ -68,10 +68,10 @@ class Args(object):
         self.parser.add_argument("--root_dir", help="if there is a need for debugging")
 
     def parse(self, args = ''):
-        if args == '':
-            args = self.parser.parse_args()
-        else:
-            args = self.parser.parse_args(args)
+#         if args == '':
+#             args = self.parser.parse_args()
+#         else:
+        args = self.parser.parse_args(args)
 
         args.gpus_str = args.gpus
         args.gpus = [int(gpu) for gpu in args.gpus.split(',')]
@@ -94,7 +94,7 @@ class Args(object):
             args.chunk_sizes.append(captain_chunk_size)
         print('trainig chunk_size:', args.chunk_sizes)
 
-        # args.root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        args.root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
         args.data_dir = os.path.join(args.root_dir, 'data')
         args.exp_dir = os.path.join(args.root_dir, 'exp')
         args.save_dir = os.path.join(args.exp_dir, args.exp_id)

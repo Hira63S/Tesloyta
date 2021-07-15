@@ -65,7 +65,7 @@ def train(args):
 
     for epoch in range(1, args.num_epochs+1):
         train_stats=trainer.train_epoch(epoch, train_loader)
-        logger.update(val_stats, phase='val', epoch=epoch)
+        logger.update(train_stats, phase='train', epoch=epoch)
 
         # save the model weights
         save_path = os.path.join(args.save_dir, 'model_last.pth')
