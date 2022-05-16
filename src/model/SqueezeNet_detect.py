@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.init as init
 from torch.utils.model_zoo import load_url as load_state_dict_from_url
-from resolver import deltas_to_boxes, compute_overlaps, safe_softmax
+from utils.resolver import deltas_to_boxes, compute_overlaps, safe_softmax
 
 __all__ = ['SqueezeNet', 'squeezenet1_0', 'squeezenet1_1']
 

@@ -2,7 +2,7 @@ import torch
 import torchvision
 import time
 
-from metriclogger import MetricLogger
+from utils.logger import Logger
 
 class Trainer():
     def __init__(self, model, optimizer, lr_scheduler, args):

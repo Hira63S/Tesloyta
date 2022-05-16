@@ -10,15 +10,15 @@ import torch.utils.data
 from torch.optim.lr_scheduler import StepLR
 
 from load_model import load_model, load_official_model, save_model
-from trainer import Trainer
-from logger import Logger
-from SqueezeNet_detect import SqueezeDetWithLoss
+from engine.trainer import Trainer
+from utils.logger import Logger
+from model.SqueezeNet_detect import SqueezeDetWithLoss
 from config import Args
 
 # load dataset
 def load_dataset(dataset_name):
     if dataset_name.lower() == 'kitti':
-        from kitti_class import KITTI as Dataset
+        from dataset.kitti_class import KITTI as Dataset
     return Dataset
 
 # load_dataset('kitti')

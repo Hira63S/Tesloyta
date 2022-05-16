@@ -78,7 +78,7 @@ def save_model(model, path, epoch):
         state_dict = model.state_dict()
 
     data = {'epoch': epoch,
-            'state_dict', state_dict}
+            'state_dict': state_dict}
 
     torch.save(data, path)
     
