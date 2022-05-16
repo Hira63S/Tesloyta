@@ -18,7 +18,7 @@ from config import Args
 # load dataset
 def load_dataset(dataset_name):
     if dataset_name.lower() == 'kitti':
-        from dataset.kitti_class import KITTI as Dataset
+        from datasets.kitti_class import KITTI as Dataset
     return Dataset
 
 # load_dataset('kitti')
