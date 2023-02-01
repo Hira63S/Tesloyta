@@ -163,7 +163,7 @@ class Loss(nn.Module):
         pred_class_probs, pred_log_class_probs, pred_scores, pred_deltas, pred_boxes = self.resolver(pred)
 
         num_objects = torch.sum(anchor_masks, dim=[1,2])
-        overlaps = computer_overlaps(gt_boxes, pred_boxes) * anchor_masks
+        overlaps = compute_overlaps(gt_boxes, pred_boxes) * anchor_masks
 
         class_loss = torch.sum(
             self.class_loss_weight * anchor_masks * gt_class_logits * (-pred_log_class_probs),
@@ -189,7 +189,7 @@ class Loss(nn.Module):
             'bbox_loss': bbox_loss
 
         }
-        return loss, loss_state
+        return loss, loss_stat
 
 
 class SqueezeDetWithLoss(nn.Module):
@@ -207,12 +207,12 @@ class SqueezeDet(nn.Module):
     """ Inference Model"""
     def __init__(self, args):
         super(SqueezeDet, self).__init__()
-        self.base = SqueezeDetBase(args)
+        self.base = SqueezeDet(args)
         self.resolver = PredictionResolver(args, log_softmax=False)
 
     def forward(self, batch):
         pred = self.base(batch['image'])
-        pred_class_labels, _, pred_scores, _, pred_boxes = self.resolver(pred)
+        pred_class_ids, _, pred_scores, _, pred_boxes = self.resolver(pred)
         pred_class_probs += pred_scores
         pred_class_ids = torch.argmax(pred_class_probs, dim=2)
         pred_scores = torch.max(pred_class_probs, dim=2)[0]

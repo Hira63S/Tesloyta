@@ -189,7 +189,7 @@ class Loss(nn.Module):
             'bbox_loss': bbox_loss
 
         }
-        return loss, loss_state
+        return loss, loss_stat
 
 
 class SqueezeDetWithLoss(nn.Module):

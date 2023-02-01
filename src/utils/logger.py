@@ -6,7 +6,7 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 
-class Logger(object):
+class MetricLogger(object):
     def __init__(self, args):
         dargs = dict((name, getattr(args, name)) for name in dir(args)
                     if not name.startswith('_'))

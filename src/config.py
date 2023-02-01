@@ -95,7 +95,7 @@ class Args(object):
         print('trainig chunk_size:', args.chunk_sizes)
 
         # args.root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-        args.data_dir = os.path.join(args.root_dir, 'data')
+        # args.data_dir = os.path.join(args.root_dir, 'data')
         args.exp_dir = os.path.join(args.root_dir, 'exp')
         args.save_dir = os.path.join(args.exp_dir, args.exp_id)
         args.debug_dir = os.path.join(args.save_dir, 'debug')

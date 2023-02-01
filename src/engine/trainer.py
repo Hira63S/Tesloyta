@@ -2,7 +2,7 @@ import torch
 import torchvision
 import time
 
-from utils.logger import Logger
+from utils.logger import MetricLogger
 
 class Trainer():
     def __init__(self, model, optimizer, lr_scheduler, args):
@@ -80,11 +80,11 @@ class Trainer():
         return self.run_epoch('val', epoch, data_loader)
 
     def set_device(self, gpus, chunk_sizes, device):
-        if len(gpus) > 1:
-           self.model = DataParallel(self.model, device_ids=gpus,
-                                     chunk_sizes=chunk_sizes).to(device)
-        else:
-            self.model = self.model.to(device)
+        # if len(gpus) > 1:
+           # self.model = DataParallel(self.model, device_ids=gpus,
+                                     # chunk_sizes=chunk_sizes).to(device)
+        # else:
+        self.model = self.model.to(device)
 
         for state in self.optimizer.state.values():
             for k, v in state.items():

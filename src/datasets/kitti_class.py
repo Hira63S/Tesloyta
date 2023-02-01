@@ -7,8 +7,8 @@ import subprocess
 import numpy as np
 import skimage.io
 
-from Base_class import BaseDataset
-from boxes import generate_anchors
+from datasets.Base_class import BaseDataset
+from utils.boxes import generate_anchors
 
 class KITTI(BaseDataset):
     def __init__(self, phase, args):

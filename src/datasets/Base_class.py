@@ -8,8 +8,8 @@ import skimage.io
 
 import torch.utils.data
 
-from images import whiten, drift, flip, resize, crop_or_pad
-from boxes import compute_deltas, visualize_boxes
+from utils.images import whiten, drift, flip, resize, crop_or_pad
+from utils.boxes import compute_deltas, visualize_boxes
 
 class BaseDataset(torch.utils.data.Dataset):
     """

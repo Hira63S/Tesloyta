@@ -11,7 +11,7 @@ from torch.optim.lr_scheduler import StepLR
 
 from load_model import load_model, load_official_model, save_model
 from engine.trainer import Trainer
-from utils.logger import Logger
+from utils.logger import MetricLogger
 from model.SqueezeNet_detect import SqueezeDetWithLoss
 from config import Args
 
@@ -29,7 +29,7 @@ def train(args):
     val_data = Dataset('val', args)
     args = Args().update_dataset_info(args, training_data)   # takes care of params in kitti class like mean, std
     Args().print(args)
-    logger = Logger(args)
+    logger = MetricLogger()
 
     model = SqueezeDetWithLoss(args)
     if args.load_model != '':
@@ -89,7 +89,7 @@ def train(args):
                 save_path = os.path.join(args.save_dir, 'model_best.pth')
                 save_model(model, save_path, epoch)
 
-        logger.plot(metrics)
+        # logger.plot(metrics)
         logger.print_bests(metrics)
 
     torch.cuda.empty_cache()
